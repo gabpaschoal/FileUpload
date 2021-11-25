@@ -1,0 +1,44 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Upload</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+</head>
+<body>
+    <input id="uploadInput" type="file" multiple />
+    <button id="uploadButton" type="button">Upload</button>
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            var btnUpload = $("#uploadButton");
+            var inputUpload = $("#uploadInput");
+
+            btnUpload.click(function (e) {
+                var formData = new FormData();
+                var inputFilesData = inputUpload.prop('files');
+                var arrayFile = Array.from(inputFilesData);
+
+                for (var idx = 0; idx < arrayFile.length; idx++) {
+                    var file = arrayFile[idx];
+                    formData.append("files", file);
+                }
+
+                $.ajax(
+                    {
+                        url: "https://localhost:7168/api/Upload?param1=teste1&param2=teste2",
+                        data: formData,
+                        processData: false,
+                        contentType: false,
+                        type: "POST",
+                        success: function (data) {
+                            alert("Files Uploaded!");
+                        }
+                    }
+                );
+                debugger;
+            });
+        });
+    </script>
+</body>
+</html>
