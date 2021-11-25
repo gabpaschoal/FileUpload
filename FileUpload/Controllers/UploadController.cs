@@ -16,25 +16,24 @@ namespace FileUpload.Controllers
             [FromQuery] string param2)
         {
             var dirUploads = Path.Combine(Directory.GetCurrentDirectory(), "Uploads");
+            Directory.CreateDirectory(dirUploads);
 
             foreach (IFormFile file in files)
             {
-                if (file.Length > 0)
+                if (file.Length <= 0)
+                    continue;
+
+                try
                 {
-                    try
-                    {
-
-                        Directory.CreateDirectory(dirUploads);
-
-                        using FileStream filestream = System.IO.File.Create(Path.Combine(dirUploads, file.FileName));
-                        await file.CopyToAsync(filestream);
-                        filestream.Flush();
-                    }
-                    catch (Exception ex)
-                    {
-                        throw ex.InnerException;
-                    }
+                    using FileStream filestream = System.IO.File.Create(Path.Combine(dirUploads, file.FileName));
+                    await file.CopyToAsync(filestream);
+                    filestream.Flush();
                 }
+                catch (Exception ex)
+                {
+                    return BadRequest(ex.Message);
+                }
+
             }
 
             return Ok();
